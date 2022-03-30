@@ -1,5 +1,5 @@
 pub struct Vigenere {
-    key: Vec<char>,
+    distances: Vec<u8>,
 }
 
 impl Vigenere {
@@ -7,7 +7,9 @@ impl Vigenere {
 
     pub fn new(key: &str) -> Self {
         Self {
-            key: key.chars().collect(),
+            distances: key.chars()
+                .map(|ch| ch as u8 - Self::BASE)
+                .collect(),
         }
     }
 
@@ -15,14 +17,13 @@ impl Vigenere {
         let plain_text: Vec<char> = plain_text.chars().collect();
     
         let mut cipher_text = String::new();
-        let mut i = 0;
+        let mut key = self.distances.iter().cycle();
         for plain_char in plain_text {
             let cipher_char  = match plain_char {
                 ch if ch >= 'A' && ch <= 'Z' => {
-                    let distance = self.key[i] as u8 - Self::BASE;
+                    let distance = *key.next().unwrap();
                     let plain_value = ch as u8 - Self::BASE;
                     let cipher_value = (plain_value + distance) % 26;
-                    i = (i + 1) % self.key.len();
                     (Self::BASE + cipher_value) as char  
                 },
                 ch => ch,
@@ -38,14 +39,13 @@ impl Vigenere {
         let cipher_text: Vec<char> = cipher_text.chars().collect();
     
         let mut plain_text = String::new();
-        let mut i = 0;
+        let mut key = self.distances.iter().cycle();
         for cipher_char in cipher_text {
             let plain_char = match cipher_char {
                 ch if ch >= 'A' && ch <= 'Z' => {
-                    let distance = self.key[i] as u8 - Self::BASE;
+                    let distance = *key.next().unwrap();
                     let cipher_value = ch as u8 - Self::BASE;
                     let plain_value = (26 + cipher_value - distance) % 26;
-                    i = (i + 1) % self.key.len();
                     (Self::BASE + plain_value) as char  
                 },
                 ch => ch,
