@@ -1,102 +1,136 @@
-const BASE: u8 = 'A' as u8;
-
-pub fn encrypt(plain_text: &str, key: &str) -> String {
-    let key: Vec<char> = key.chars().collect();
-    let plain_text: Vec<char> = plain_text.chars().collect();
-
-    let mut cipher_text = String::new();
-    let mut i = 0;
-    for plain_char in plain_text {
-        let cipher_char  = match plain_char {
-            ch if ch >= 'A' && ch <= 'Z' => {
-                let distance = key[i] as u8 - BASE;
-                let plain_value = ch as u8 - BASE;
-                let cipher_value = (plain_value + distance) % 26;
-                i = (i + 1) % key.len();
-                (BASE + cipher_value) as char  
-            },
-            ch => ch,
-        };
-
-        cipher_text.push(cipher_char);
-    }
-
-    cipher_text
+pub struct Vigenere {
+    key: Vec<char>,
 }
 
-pub fn decrypt(cipher_text: &str, key: &str) -> String {
-    let key: Vec<char> = key.chars().collect();
-    let cipher_text: Vec<char> = cipher_text.chars().collect();
+impl Vigenere {
+    const BASE: u8 = 'A' as u8;
 
-    let mut plain_text = String::new();
-    let mut i = 0;
-    for cipher_char in cipher_text {
-        let plain_char = match cipher_char {
-            ch if ch >= 'A' && ch <= 'Z' => {
-                let distance = key[i] as u8 - BASE;
-                let cipher_value = ch as u8 - BASE;
-                let plain_value = (26 + cipher_value - distance) % 26;
-                i = (i + 1) % key.len();
-                (BASE + plain_value) as char  
-            },
-            ch => ch,
-        };
-
-        plain_text.push(plain_char);
+    pub fn new(key: &str) -> Self {
+        Self {
+            key: key.chars().collect(),
+        }
     }
 
-    plain_text
+    pub fn encrypt(&self, plain_text: &str) -> String {
+        let plain_text: Vec<char> = plain_text.chars().collect();
+    
+        let mut cipher_text = String::new();
+        let mut i = 0;
+        for plain_char in plain_text {
+            let cipher_char  = match plain_char {
+                ch if ch >= 'A' && ch <= 'Z' => {
+                    let distance = self.key[i] as u8 - Self::BASE;
+                    let plain_value = ch as u8 - Self::BASE;
+                    let cipher_value = (plain_value + distance) % 26;
+                    i = (i + 1) % self.key.len();
+                    (Self::BASE + cipher_value) as char  
+                },
+                ch => ch,
+            };
+    
+            cipher_text.push(cipher_char);
+        }
+    
+        cipher_text
+    }
+    
+    pub fn decrypt(&self, cipher_text: &str) -> String {
+        let cipher_text: Vec<char> = cipher_text.chars().collect();
+    
+        let mut plain_text = String::new();
+        let mut i = 0;
+        for cipher_char in cipher_text {
+            let plain_char = match cipher_char {
+                ch if ch >= 'A' && ch <= 'Z' => {
+                    let distance = self.key[i] as u8 - Self::BASE;
+                    let cipher_value = ch as u8 - Self::BASE;
+                    let plain_value = (26 + cipher_value - distance) % 26;
+                    i = (i + 1) % self.key.len();
+                    (Self::BASE + plain_value) as char  
+                },
+                ch => ch,
+            };
+    
+            plain_text.push(plain_char);
+        }
+    
+        plain_text
+    }    
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{encrypt, decrypt};
+    use super::Vigenere;
 
     #[test]
     fn encrypt_main_example() {
-        let plain_text = encrypt("TO EMPOWER EVERY ONE", "WHYRUST");
-        assert_eq!(plain_text, "PV CDJGPAY CMYJR KUC");
+        let encrypter = Vigenere::new("WHYRUST");
+
+        let plain_text = encrypter.encrypt("TO EMPOWER EVERYONE");
+
+        assert_eq!(plain_text, "PV CDJGPAY CMYJRKUC");
     }
 
     #[test]
     fn decrypt_single_char_unit_transform() {
-        let plain_text = decrypt("A", "A");
-        assert_eq!(plain_text, "A");
+        let decrypter = Vigenere::new("A");
+
+        let plain_text = decrypter.decrypt("Q");
+
+        assert_eq!(plain_text, "Q");
     }
 
     #[test]
     fn decrypt_multiple_chars_unit_transform() {
-        let plain_text = decrypt("ABCD", "A");
-        assert_eq!(plain_text, "ABCD");
+        let decrypter = Vigenere::new("A");
+
+        let plain_text = decrypter.decrypt("QRST");
+
+        assert_eq!(plain_text, "QRST");
     }
 
     #[test]
     fn decrypt_single_char_single_step() {
-        let plain_text = decrypt("B", "B");
-        assert_eq!(plain_text, "A");
+        let decrypter = Vigenere::new("B");
+
+        let plain_text = decrypter.decrypt("D");
+
+        assert_eq!(plain_text, "C");
     }
 
     #[test]
     fn decrypt_multiple_chars_single_step() {
-        let plain_text = decrypt("BCDE", "B");
-        assert_eq!(plain_text, "ABCD");
+        let decrypter = Vigenere::new("B");
+
+        let plain_text = decrypter.decrypt("DEFG");
+
+        assert_eq!(plain_text, "CDEF");
     }
 
     #[test]
     fn decrypt_multiple_chars_different_steps() {
-        let plain_text = decrypt("BCDE", "AB");
+        let decrypter = Vigenere::new("AB");
+
+        let plain_text = decrypter.decrypt("BCDE");
+
         assert_eq!(plain_text, "BBDD");
     }
 
     #[test]
     fn decrypt_other_example() {
-        let plain_text = decrypt("LXFOPV EF RNHR", "LEMON");
+        let decrypter = Vigenere::new("LEMON");
+
+        let plain_text = decrypter.decrypt("LXFOPV EF RNHR");
+
         assert_eq!(plain_text, "ATTACK AT DAWN");
     }
 
     #[test]
     fn decrypt_main_example() {
-        let plain_text = decrypt("PV CDJGPAY CMYJR KUC", "WHYRUST");
+        let decrypter = Vigenere::new("WHYRUST");
+
+        let plain_text = decrypter.decrypt("PV CDJGPAY CMYJR KUC");
+
         assert_eq!(plain_text, "TO EMPOWER EVERY ONE");
     }
 
