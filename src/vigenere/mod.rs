@@ -10,11 +10,11 @@ impl Vigenere {
     }
 
     pub fn encrypt(&self, plain_text: &str) -> String {
-        plain_text.chars().encrypt(&self.0).collect()
+        plain_text.chars().encrypt(&self.0, None).collect()
     }
     
     pub fn decrypt(&self, cipher_text: &str) -> String {
-        cipher_text.chars().decrypt(&self.0).collect()
+        cipher_text.chars().decrypt(&self.0, None).collect()
     }    
 }
 
