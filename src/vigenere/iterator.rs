@@ -132,7 +132,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn identity_encrypt_upper() {
+    fn identity_encrypt_upper_key_upper_input() {
         let s = "HI";
         let iter_in = s.chars();
         let mut iter_out = iter_in.encrypt("A", None);
@@ -142,7 +142,7 @@ mod tests {
     }
 
     #[test]
-    fn identity_encrypt_lower() {
+    fn identity_encrypt_lower_key_upper_input() {
         let s = "HI";
         let iter_in = s.chars();
         let mut iter_out = iter_in.encrypt("a", None);
@@ -152,7 +152,27 @@ mod tests {
     }
 
     #[test]
-    fn minimal_encrypt_upper() {
+    fn identity_encrypt_upper_key_lower_input() {
+        let s = "hi";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.encrypt("A", None);
+        assert_eq!(iter_out.next(), Some('h'));
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
+    fn identity_encrypt_lower_key_lower_input() {
+        let s = "hi";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.encrypt("a", None);
+        assert_eq!(iter_out.next(), Some('h'));
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
+    fn minimal_encrypt_upper_key_upper_input() {
         let s = "HI";
         let iter_in = s.chars();
         let mut iter_out = iter_in.encrypt("B", None);
@@ -162,7 +182,7 @@ mod tests {
     }
 
     #[test]
-    fn minimal_encrypt_lower() {
+    fn minimal_encrypt_lower_key_upper_input() {
         let s = "HI";
         let iter_in = s.chars();
         let mut iter_out = iter_in.encrypt("b", None);
@@ -172,10 +192,54 @@ mod tests {
     }
 
     #[test]
+    fn minimal_encrypt_upper_key_lower_input() {
+        let s = "hi";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.encrypt("B", None);
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), Some('j'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
+    fn minimal_encrypt_lower_key_lower_input() {
+        let s = "hi";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.encrypt("b", None);
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), Some('j'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
     fn bigger_encrypt() {
-        let s = "HIHI";
+        let s = "HiHi";
         let iter_in = s.chars();
         let mut iter_out = iter_in.encrypt("ABC", None);
+        assert_eq!(iter_out.next(), Some('H'));
+        assert_eq!(iter_out.next(), Some('j'));
+        assert_eq!(iter_out.next(), Some('J'));
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
+    fn bigger_encrypt_force_lower() {
+        let s = "HiHi";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.encrypt("ABC", Some(ForceCase::ToLower));
+        assert_eq!(iter_out.next(), Some('h'));
+        assert_eq!(iter_out.next(), Some('j'));
+        assert_eq!(iter_out.next(), Some('j'));
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
+    fn bigger_encrypt_force_upper() {
+        let s = "HiHi";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.encrypt("ABC", Some(ForceCase::ToUpper));
         assert_eq!(iter_out.next(), Some('H'));
         assert_eq!(iter_out.next(), Some('J'));
         assert_eq!(iter_out.next(), Some('J'));
@@ -184,7 +248,7 @@ mod tests {
     }
 
     #[test]
-    fn identity_decrypt() {
+    fn identity_decrypt_upper_key_upper_input() {
         let s = "HI";
         let iter_in = s.chars();
         let mut iter_out = iter_in.decrypt("A", None);
@@ -194,7 +258,37 @@ mod tests {
     }
 
     #[test]
-    fn minimal_decrypt() {
+    fn identity_decrypt_lower_key_upper_input() {
+        let s = "HI";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.decrypt("a", None);
+        assert_eq!(iter_out.next(), Some('H'));
+        assert_eq!(iter_out.next(), Some('I'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
+    fn identity_decrypt_upper_key_lower_input() {
+        let s = "hi";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.decrypt("A", None);
+        assert_eq!(iter_out.next(), Some('h'));
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
+    fn identity_decrypt_lower_key_lower_input() {
+        let s = "hi";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.decrypt("a", None);
+        assert_eq!(iter_out.next(), Some('h'));
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
+    fn minimal_decrypt_upper_key_upper_input() {
         let s = "IJ";
         let iter_in = s.chars();
         let mut iter_out = iter_in.decrypt("B", None);
@@ -204,10 +298,64 @@ mod tests {
     }
 
     #[test]
+    fn minimal_decrypt_lower_key_upper_input() {
+        let s = "IJ";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.decrypt("b", None);
+        assert_eq!(iter_out.next(), Some('H'));
+        assert_eq!(iter_out.next(), Some('I'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
+    fn minimal_decrypt_upper_key_lower_input() {
+        let s = "ij";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.decrypt("B", None);
+        assert_eq!(iter_out.next(), Some('h'));
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
+    fn minimal_decrypt_lower_key_lower_input() {
+        let s = "ij";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.decrypt("b", None);
+        assert_eq!(iter_out.next(), Some('h'));
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
     fn bigger_decrypt() {
-        let s = "HJJI";
+        let s = "HjJi";
         let iter_in = s.chars();
         let mut iter_out = iter_in.decrypt("ABC", None);
+        assert_eq!(iter_out.next(), Some('H'));
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), Some('H'));
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
+    fn bigger_decrypt_force_lower() {
+        let s = "HjJi";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.decrypt("ABC", Some(ForceCase::ToLower));
+        assert_eq!(iter_out.next(), Some('h'));
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), Some('h'));
+        assert_eq!(iter_out.next(), Some('i'));
+        assert_eq!(iter_out.next(), None);
+    }
+
+    #[test]
+    fn bigger_decrypt_force_upper() {
+        let s = "HjJi";
+        let iter_in = s.chars();
+        let mut iter_out = iter_in.decrypt("ABC", Some(ForceCase::ToUpper));
         assert_eq!(iter_out.next(), Some('H'));
         assert_eq!(iter_out.next(), Some('I'));
         assert_eq!(iter_out.next(), Some('H'));
