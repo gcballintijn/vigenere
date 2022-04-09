@@ -1,8 +1,12 @@
+//! Iterator-based implementation of the Vigenère cipher.
+
+/// Type of operation of the iterator.
 enum VigenereMode {
     Encrypt,
     Decrypt,
 }
 
+/// Method of dealing with the case of letters.
 #[derive(PartialEq)]
 pub enum ForceCase {
     Keep,
@@ -10,6 +14,7 @@ pub enum ForceCase {
     ToUpper,
 }
 
+/// Iterator, over characters, that encrypts or decrypts the character using the Vigenère cipher. 
 pub struct VigenereIterator<I>
     where I: Iterator<Item = char>
 {

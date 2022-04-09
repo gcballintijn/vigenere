@@ -1,7 +1,10 @@
+//! Implementation of the Vigenère cipher. 
+
 mod iterator;
 
 use iterator::{Encrypt, Decrypt};
 
+/// Struct to encrypt or decrypt a string slice using the Vigenère cipher. 
 pub struct Vigenere(String);
 
 impl Vigenere {
