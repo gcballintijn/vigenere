@@ -1,4 +1,6 @@
-//! Implementation of the Vigenère cipher. 
+//! Implementation of the Vigenère cipher.
+//!
+//! For some background information, see the [Wikipedia entry](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher).
 
 mod iterator;
 
