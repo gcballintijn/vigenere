@@ -1,5 +1,3 @@
-mod vigenere;
-
 use vigenere::Vigenere;
 
 const KEY: &str = "WHYRUST";
