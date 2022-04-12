@@ -1,22 +1,28 @@
+#![warn(missing_docs)]
+
 //! Implementation of the Vigenère cipher.
 //!
 //! For some background information, see the [Wikipedia entry](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher).
 //!
 //! ### Encyption example
-//! ```
+//! ```rust
+//! # fn main() {
 //!     let cypher = vigenere::Vigenere::new("WHYRUST");
 //!     let cipher_text = cypher.encrypt("TO EMPOWER EVERYONE");
-//!     println!("Encrypting '{}' gives '{}'.", plain_text, cipher_text);
+//!     println!("Encrypting gives '{}'.", cipher_text);
+//! # }
 //! ```
-//! Resulting output: `Encrypting 'TO EMPOWER EVERYONE' gives 'PV CDJGPAY CMYJRKUC'.`
+//! Resulting output: `Encrypting gives 'PV CDJGPAY CMYJRKUC'.`
 //! 
 //! ### Decyption example
-//! ```
+//! ```rust
+//! # fn main() {
 //!     let cypher = vigenere::Vigenere::new("WHYRUST");
 //!     let plain_text = cypher.decrypt("PV CDJGPAY CMYJRKUC");
-//!     println!("Decrypting '{}' gives '{}'.", cipher_text, plain_text);
+//!     println!("Decrypting gives '{}'.", plain_text);
+//! # }
 //! ```
-//! Resulting output: `Decrypting 'PV CDJGPAY CMYJRKUC' gives 'TO EMPOWER EVERYONE'.`
+//! Resulting output: `Decrypting gives 'TO EMPOWER EVERYONE'.`
 
 pub mod iterator;
 
@@ -33,12 +39,12 @@ impl Vigenere {
 
     /// Encrypts the provided plain text and returns the resulting cipher text.
     pub fn encrypt(&self, plain_text: &str) -> String {
-        plain_text.chars().encrypt(&self.0, None).collect()
+        plain_text.chars().encrypt(&self.0, None, None).collect()
     }
     
     /// Decrypts the provided cipher text and returns the resulting plain text.
     pub fn decrypt(&self, cipher_text: &str) -> String {
-        cipher_text.chars().decrypt(&self.0, None).collect()
+        cipher_text.chars().decrypt(&self.0, None, None).collect()
     }    
 }
 
