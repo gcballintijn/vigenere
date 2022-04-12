@@ -1,3 +1,5 @@
+#![warn(missing_docs)]
+
 //! Implementation of the Vigenère cipher.
 //!
 //! For some background information, see the [Wikipedia entry](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher).
@@ -37,12 +39,12 @@ impl Vigenere {
 
     /// Encrypts the provided plain text and returns the resulting cipher text.
     pub fn encrypt(&self, plain_text: &str) -> String {
-        plain_text.chars().encrypt(&self.0, None).collect()
+        plain_text.chars().encrypt(&self.0, None, None).collect()
     }
     
     /// Decrypts the provided cipher text and returns the resulting plain text.
     pub fn decrypt(&self, cipher_text: &str) -> String {
-        cipher_text.chars().decrypt(&self.0, None).collect()
+        cipher_text.chars().decrypt(&self.0, None, None).collect()
     }    
 }
 
