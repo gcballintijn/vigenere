@@ -1,15 +1,25 @@
+//! Iterator-based implementation of the Vigenère cipher.
+
+/// Type of operation of the character iterator.
 enum VigenereMode {
-    Encrypt,
+    /// Decrypt the stream of characters.
     Decrypt,
+    /// Encrypt the stream of characters.
+    Encrypt,
 }
 
+/// Method of dealing with the case of letters.
 #[derive(PartialEq)]
 pub enum ForceCase {
+    /// Keep the case of the characters.
     Keep,
+    /// Force the character to lower case.  
     ToLower,
-    ToUpper,
+    /// Force the character to upper case.
+    ToUpper,  
 }
 
+/// Iterator, over characters, that encrypts or decrypts the character using the Vigenère cipher. 
 pub struct VigenereIterator<I>
     where I: Iterator<Item = char>
 {
@@ -95,11 +105,15 @@ impl<I> Iterator for VigenereIterator<I>
     }
 }
 
+/// Encryption trait for a character iterator.
 pub trait Encrypt : Iterator<Item = char> + Sized {
+    /// Encrypt characters using the specified key and configuration.
     fn encrypt(self, key: &str, force_case: Option<ForceCase>) -> VigenereIterator<Self>;
 }
 
+/// Decryption trait for a character iterator.
 pub trait Decrypt : Iterator<Item = char> + Sized {
+    /// Decrypt characters using the specified key and configuration.
     fn decrypt(self, key: &str, force_case: Option<ForceCase>) -> VigenereIterator<Self>;
 }
 
